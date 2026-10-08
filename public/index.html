@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ALnova QR</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header class="topbar">
+        <div class="brand">
+            <div class="logo">
+                <img src="/assets/alnova-logo.png" alt="ALnova">
+            </div>
+            <span>ALnova QR</span>
+        </div>
+
+        <button id="profileBtn" class="profile-btn top-profile-btn" type="button" title="Iniciar sesión">
+            <span class="profile-icon" aria-hidden="true">&#128100;</span>
+            <span id="profileStatus">Iniciar sesión</span>
+        </button>
+
+        <span class="version">v0.1</span>
+    </header>
+
+
+    <main class="container">
+
+        <section class="hero">
+            <h1>ALnova QR</h1>
+            <p>Genera y escanea códigos QR de forma rápida y segura.</p>
+
+            <div class="mode-selector">
+                <button id="generatorModeBtn" class="mode-btn active" type="button">
+                    Generar QR
+                </button>
+
+                <button id="scannerModeBtn" class="mode-btn" type="button">
+                    Escanear QR
+                </button>
+            </div>
+        </section>
+
+
+        <section class="workspace">
+
+            <div class="panel">
+
+                <h2>Contenido</h2>
+
+                <label for="qrText">
+                    Texto o URL
+                </label>
+
+                <textarea
+                    id="qrText"
+                    placeholder="Escribe aquí el texto o URL..."
+                ></textarea>
+
+
+                <h2>Personalización</h2>
+
+                <div class="option">
+                    <label for="qrColor">
+                        Color del QR
+                    </label>
+
+                    <input
+                        type="color"
+                        id="qrColor"
+                        value="#111111"
+                    >
+                </div>
+
+
+                <div class="option">
+                    <label for="bgColor">
+                        Color del fondo
+                    </label>
+
+                    <input
+                        type="color"
+                        id="bgColor"
+                        value="#ffffff"
+                    >
+                </div>
+
+
+                <div class="option">
+
+                    <label for="qrSize">
+                        Tamaño
+                    </label>
+
+                    <input
+                        type="range"
+                        id="qrSize"
+                        min="200"
+                        max="600"
+                        value="350"
+                    >
+
+                    <span id="sizeValue">350 px</span>
+
+                </div>
+
+
+                <div class="option">
+                    <label for="qrShape">
+                        Forma de los módulos
+                    </label>
+
+                    <select id="qrShape">
+                        <option value="square">Cuadrado</option>
+                        <option value="rounded">Redondeado</option>
+                        <option value="circle">Circular</option>
+                    </select>
+                </div>
+
+
+                <div class="option">
+                    <label for="finderShape">
+                        Forma de las esquinas
+                    </label>
+
+                    <select id="finderShape">
+                        <option value="square">Cuadrada</option>
+                        <option value="rounded">Redondeada</option>
+                        <option value="circle">Circular</option>
+                    </select>
+                </div>
+
+
+                <div class="option">
+
+                    <label for="qrMargin">
+                        Margen
+                    </label>
+
+                    <input
+                        type="range"
+                        id="qrMargin"
+                        min="0"
+                        max="10"
+                        value="2"
+                    >
+
+                    <span id="marginValue">2</span>
+
+                </div>
+
+
+                <button id="generateBtn">
+                    Generar QR
+                </button>
+
+                <button id="clearBtn" type="button">
+                    Limpiar
+                </button>
+
+            </div>
+
+
+            <div class="preview">
+
+                <h2>Vista previa</h2>
+
+                <div id="qrContainer">
+                    <p>
+                        Tu código QR aparecerá aquí
+                    </p>
+                </div>
+
+                <div id="scanabilityCard" class="scanability-card" hidden>
+                    <div class="scanability-heading">
+                        <div>
+                            <span class="result-label">Análisis estimado</span>
+                            <h3>Escaneabilidad</h3>
+                        </div>
+                        <strong id="scanabilityScore">—</strong>
+                    </div>
+
+                    <div class="scanability-meter" aria-hidden="true">
+                        <span id="scanabilityMeter"></span>
+                    </div>
+
+                    <p id="scanabilityLevel" class="scanability-level">Genera un QR para analizarlo.</p>
+                    <ul id="scanabilityWarnings" class="scanability-warnings"></ul>
+                </div>
+
+                <button id="downloadBtn" disabled>
+                    Descargar QR
+                </button>
+
+                <label for="qrName">Nombre para guardar</label>
+                <input id="qrName" type="text" maxlength="100" placeholder="Ej. QR de contacto">
+
+                <button id="saveQrBtn" type="button" disabled>
+                    Guardar en Mis QR
+                </button>
+
+            </div>
+
+        </section>
+
+        <section id="savedQrSection" class="saved-qr-section" hidden>
+            <div class="scanner-panel">
+                <div class="section-heading">
+                    <div>
+                        <span class="result-label">Biblioteca personal</span>
+                        <h2>Mis QR</h2>
+                    </div>
+                    <button id="refreshSavedQrBtn" type="button">Actualizar</button>
+                </div>
+                <p id="savedQrMessage" class="scanner-description">Tus códigos guardados aparecerán aquí.</p>
+                <div id="savedQrList" class="saved-qr-list"></div>
+            </div>
+        </section>
+
+        <section id="scannerSection" class="scanner-section" hidden>
+            <div class="scanner-panel">
+                <h2>Escanear código QR</h2>
+
+                <p class="scanner-description">
+                    Escanea un código QR y revisa su contenido antes de abrirlo.
+                </p>
+
+                <div id="scannerLiveArea" class="scanner-live-area">
+                    <div id="reader"></div>
+
+                    <div class="scanner-actions">
+                        <button id="startScannerBtn" type="button">
+                            Iniciar cámara
+                        </button>
+
+                        <label class="upload-qr-btn">
+                            Cargar imagen
+                            <input type="file" id="qrImageInput" accept="image/*" hidden>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="scanResult" class="scan-result" hidden>
+                    <h3>¿A dónde lleva este QR?</h3>
+
+                    <div class="result-card">
+                        <span class="result-label">Tipo</span>
+                        <strong id="resultType">—</strong>
+
+                        <span class="result-label">Contenido</span>
+                        <p id="resultContent">—</p>
+
+                        <div id="urlPreview" class="url-preview" hidden>
+                            <span class="result-label">Protocolo</span>
+                            <strong id="resultProtocol">—</strong>
+
+                            <span class="result-label">Destino</span>
+                            <strong id="resultDomain">—</strong>
+
+                            <span class="result-label">Ruta</span>
+                            <p id="resultPath">—</p>
+
+                            <span class="result-label">URL completa</span>
+                            <p id="resultUrl">—</p>
+
+                            <button id="openUrlBtn" type="button">
+                                Abrir enlace
+                            </button>
+
+                            <p id="httpWarning" class="http-warning" hidden>
+                                Advertencia: este enlace usa HTTP y no una conexión segura.
+                            </p>
+                        </div>
+
+                        <button id="scanAnotherBtn" class="scan-another-btn" type="button">
+                            Escanear otro QR
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <div id="profileModal" class="profile-modal" hidden>
+        <div class="profile-dialog" role="dialog" aria-modal="true" aria-labelledby="profileTitle">
+            <button id="closeProfileBtn" class="close-profile-btn" type="button" aria-label="Cerrar">
+                &times;
+            </button>
+
+            <span class="result-label">Cuenta Supabase</span>
+            <h2 id="profileTitle">Iniciar sesión</h2>
+            <p id="profileDescription">Accede para guardar y administrar tus códigos QR.</p>
+
+            <form id="profileForm">
+                <label for="profileName">Nombre</label>
+                <input id="profileName" name="name" type="text" autocomplete="name" maxlength="80">
+
+                <label for="profileUsername">Usuario</label>
+                <input id="profileUsername" name="username" type="text" autocomplete="username" maxlength="50">
+
+                <label for="profileAvatar">URL del avatar</label>
+                <input id="profileAvatar" name="avatar_url" type="url" maxlength="500">
+
+                <label for="profileEmail">Email</label>
+                <input id="profileEmail" name="email" type="email" autocomplete="email" required maxlength="120">
+
+                <label for="profilePassword">Contraseña</label>
+                <input id="profilePassword" name="password" type="password" autocomplete="current-password" required minlength="6">
+
+                <p id="profileError" class="profile-error" hidden></p>
+
+                <button id="authSubmitBtn" type="submit">Iniciar sesión</button>
+                <button id="authModeBtn" type="button">Crear cuenta</button>
+                <button id="signOutBtn" type="button" hidden>Cerrar sesión</button>
+            </form>
+        </div>
+    </div>
+
+
+    <footer>
+        ALnova QR · 0.1
+    </footer>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/html5-qrcode.min.js"></script>
+    <script src="/app.js"></script>
+
+</body>
+</html>
