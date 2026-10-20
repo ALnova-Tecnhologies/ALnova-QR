@@ -36,6 +36,7 @@ const scannerWorkspace = document.getElementById("scannerSection");
 const scannerLiveArea = document.getElementById("scannerLiveArea");
 const startScannerBtn = document.getElementById("startScannerBtn");
 const qrImageInput = document.getElementById("qrImageInput");
+const useLogo = document.getElementById("useLogo");
 const scanResult = document.getElementById("scanResult");
 const resultType = document.getElementById("resultType");
 const resultContent = document.getElementById("resultContent");
@@ -822,7 +823,15 @@ function drawLogo(ctx, canvasSize, light) {
 
 
 // Dibujar QR personalizado
-async function drawQR(modules, moduleCount, size, dark, light, shape, finderShape, margin) {
+async function drawQR(    modules,
+    moduleCount,
+    size,
+    dark,
+    light,
+    shape,
+    finderShape,
+    margin,
+    includeLogo) {
 
     const canvas = document.createElement("canvas");
 
@@ -901,7 +910,9 @@ async function drawQR(modules, moduleCount, size, dark, light, shape, finderShap
     drawFinder(ctx, moduleCount - 7 + quietZone, quietZone, moduleSize, dark, light, finderShape);
     drawFinder(ctx, quietZone, moduleCount - 7 + quietZone, moduleSize, dark, light, finderShape);
 
+    if (includeLogo) {
     await drawLogo(ctx, size, light);
+    }
 
     return canvas;
 }
@@ -948,14 +959,15 @@ generateBtn.addEventListener("click", async () => {
 
         // Dibujar QR
         const canvas = await drawQR(
-            data.data,
-            data.modules,
-            Number(qrSize.value),
-            qrColor.value,
-            bgColor.value,
-            qrShape.value,
-            finderShape.value,
-            qrMargin.value
+        data.data,
+        data.modules,
+        Number(qrSize.value),
+        qrColor.value,
+        bgColor.value,
+        qrShape.value,
+        finderShape.value,
+        qrMargin.value,
+        useLogo.checked
         );
 
         // Limpiar QR anterior
